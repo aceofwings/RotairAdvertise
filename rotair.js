@@ -70,34 +70,21 @@ function assembleBlades(){
      starty += y;
      triangle.velocity({left: startx, bottom: starty});
      triangle.velocity({rotateZ: -currentRotation},{complete : function(element){
-       rotateBlades()
+       if (triangleElements[triangleElements.length -1][0] == $(element)[0]){
+         console.log(triangleElements[triangleElements.length -1]);
+       }
      }});
      currentRotation += ir;
  }
 }
 
 function rotateBlades(){
-  var middleofScreen = $(window).width()/2;
-  var startx = middleofScreen;
-  var starty = 200
-  var ir = 360 / triangleElements.length;
-  currentRotation = 0;
-  var t = 1;
-  var triangleheight = 40;
   for(var i = 0 ; i < triangleElements.length; i ++){
-    triangle = triangleElements[t++ % triangleElements.length];
-    radians = (Math.PI / 180) * currentRotation;
-    var x = triangleheight * Math.cos(radians);
-    var y = triangleheight * Math.sin(radians);
-    startx += x;
-    starty += y;
-    triangle.velocity({left: startx, bottom: starty}, {duration: 50});
-    if(true){
-      triangle.velocity({rotateZ: "-=-22.5"}, {queue: false, duration: 50});
-    }else{
-      triangle.velocity({rotateZ: +currentRotation}, {queue: false});
-    }
-    currentRotation += ir;
+    var triangle = triangleElements[0];
+    var triangleNext = triangleElements[3];
+    var position = triangleNext.position()
+    triangle.velocity({left: position.left, top: position.top}, {duration: 400});
+    triangle.velocity({rotateZ: "+=-22.5"}, {queue: false, duration: 400});
  }
 }
 function unifyBlades(){
@@ -113,7 +100,6 @@ function main(){
   startAnimation();
   assembleBlades();
   unifyBlades();
-
 }
 
 main();
