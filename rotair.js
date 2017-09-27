@@ -68,10 +68,12 @@ function assembleBlades(){
      var y = triangleheight * Math.sin(radians);
      startx += x;
      starty += y;
+     triangles[i].x = startx;
+     triangles[i].y = starty;
      triangle.velocity({left: startx, bottom: starty});
      triangle.velocity({rotateZ: -currentRotation},{complete : function(element){
        if (triangleElements[triangleElements.length -1][0] == $(element)[0]){
-         console.log(triangleElements[triangleElements.length -1]);
+
        }
      }});
      currentRotation += ir;
@@ -79,13 +81,16 @@ function assembleBlades(){
 }
 
 function rotateBlades(){
-  for(var i = 0 ; i < triangleElements.length; i ++){
-    var triangle = triangleElements[0];
-    var triangleNext = triangleElements[3];
-    var position = triangleNext.position()
-    triangle.velocity({left: position.left, top: position.top}, {duration: 400});
-    triangle.velocity({rotateZ: "+=-22.5"}, {queue: false, duration: 400});
- }
+  var first = triangles[0];
+  for(var i = 0 ; i < triangleElements.length  ; i ++){
+    triangles[i] = triangles[(i + 1 ) % 16];
+  }
+  triangles[15] = first;
+  for(var i = 0 ; i < triangleElements.length ; i ++){
+    triangleNextAttributes = triangles[i];
+    triangle = triangleElements[i];
+    triangle.velocity({left: triangleNextAttributes.x, bottom: triangleNextAttributes.y,rotateZ: "-=" + 22.5}, {duration: 20});
+  }
 }
 function unifyBlades(){
   div = $(document.createElement('div'));
