@@ -49,7 +49,7 @@ function startAnimation(){
    triangle = triangleElements[i];
    triangleprops = triangles[i];
    triangle.velocity({rotateZ: triangleprops.rotation},{duration: 0});
-   triangle.velocity({bottom: 150}, {easing: [ 150, 10 ], duration: 2000 });
+   triangle.velocity({bottom: 150}, {easing: [ 150, 10 ], duration: 2000 ,delay : 250});
    triangle.velocity({rotateZ: 0}, { queue: false, duration: 2000 });
  }
 }
@@ -68,15 +68,37 @@ function assembleBlades(){
      var y = triangleheight * Math.sin(radians);
      startx += x;
      starty += y;
-     triangle.velocity({left: startx, bottom: starty });
-     triangle.velocity({rotateZ: -currentRotation});
+     triangle.velocity({left: startx, bottom: starty});
+     triangle.velocity({rotateZ: -currentRotation},{complete : function(element){
+       rotateBlades()
+     }});
      currentRotation += ir;
  }
 }
 
 function rotateBlades(){
-  blades = $('.unified-blades');
-//  blades.velocity({rotateZ: '+=360'}, {loop: true, duration: 2000})
+  var middleofScreen = $(window).width()/2;
+  var startx = middleofScreen;
+  var starty = 200
+  var ir = 360 / triangleElements.length;
+  currentRotation = 0;
+  var t = 1;
+  var triangleheight = 40;
+  for(var i = 0 ; i < triangleElements.length; i ++){
+    triangle = triangleElements[t++ % triangleElements.length];
+    radians = (Math.PI / 180) * currentRotation;
+    var x = triangleheight * Math.cos(radians);
+    var y = triangleheight * Math.sin(radians);
+    startx += x;
+    starty += y;
+    triangle.velocity({left: startx, bottom: starty}, {duration: 50});
+    if(true){
+      triangle.velocity({rotateZ: "-=-22.5"}, {queue: false, duration: 50});
+    }else{
+      triangle.velocity({rotateZ: +currentRotation}, {queue: false});
+    }
+    currentRotation += ir;
+ }
 }
 function unifyBlades(){
   div = $(document.createElement('div'));
@@ -91,7 +113,7 @@ function main(){
   startAnimation();
   assembleBlades();
   unifyBlades();
-  rotateBlades();
+
 }
 
 main();
