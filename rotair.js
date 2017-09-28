@@ -105,20 +105,20 @@ function positionAirBlades(){
     //airblade.velocity({x: 1000, y: 50})
 }
 function beginAirbladeAnimation(speed){
-  
-  var life = Math.floor(Math.random() * airblades.length);
-  console.log(life);
-  var blade = airblades[life];
-  var value = airbladeValues[life];
-  if(speed < 100){
-    $(blade).velocity({ translateX: 0, translateY: [-20,0] , opacity: 1, easing:"linear"},{duration : 50}).velocity({opacity: 0});
-  }else if(speed <150){
-    $(blade).velocity({ translateX: 0, translateY: [-90,0] , opacity: 1, easing:"linear"},{duration : 100}).velocity({opacity: 0});
-  }else if(speed <300 ){
-    $(blade).velocity({ translateX: 0, translateY: [-90,0] , opacity: 1, easing:"linear"},{duration : 200}).velocity({opacity: 0});
-  }else{
-    $(blade).velocity({ translateX: 0, translateY: [-90,0] , opacity: 1, easing:"linear"},{duration : 300}).velocity({opacity: 0});
+  for (var cow = 0 ; cow < airblades.length; cow++){
+    console.log("hello");
+    var blade = airblades[cow];
+    var value = airbladeValues[cow];
+    if(speed < 100){
+      $(blade).velocity({ translateX: 0, translateY: [-40,0] , opacity: 1, easing:"linear"},{queue: false,duration : 100, delay: cow * 50});
+    }else if(speed <150){
+      $(blade).velocity({ translateX: 0, translateY: [-90,0] , opacity: 1, easing:"linear"},{queue: false,duration : 300,delay: cow * 50});
+    }else if(speed <300 ){
+      $(blade).velocity({ translateX: 0, translateY: [-90,0] , opacity: 1, easing:"linear"},{queue: false,duration : 300,delay: cow * 50});
+    }else{
+      $(blade).velocity({ translateX: 0, translateY: [-90,0] , opacity: 1, easing:"linear"},{queue: false, duration : 400,delay: cow * 50});
 
+    }
   }
 }
 function rotateBlades(speed){
@@ -148,7 +148,6 @@ function rotateBlades(speed){
         }else{
           rotateBlades(speed - 100);
           beginAirbladeAnimation(speed);
-
         }
       }
     }});
