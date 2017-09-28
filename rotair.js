@@ -93,8 +93,8 @@ function positionAirBlades(){
     for( var i = 0 ; i < triangleElements.length; i ++){
       var cp = airblade.clone();
       var position = triangles[i];
-
-      cp.css({opacity: 1,'position' : 'absolute', left: position.x - 80, bottom: position.y - 40, "transform":"rotate(" + currentRotation + "deg)"});
+      cp.css({opacity: 1,'position' : 'absolute', left: position.x - 80, bottom: position.y - 40});
+      $(cp).velocity({rotateZ: currentRotation},{queue: false, duration: 0})
       value = {rotatation : currentRotation , left: position.x - 80, bottom: position.y - 40 }
       currentRotation -= 22.5;
       body.append(cp);
@@ -105,12 +105,18 @@ function positionAirBlades(){
     //airblade.velocity({x: 1000, y: 50})
 }
 function beginAirbladeAnimation(speed){
-  var i = Math.random() * airblades.length;
-  var blade = airblades[0];
-  var value = airbladeValues[0];
-  console.log(airbladeValues[1].rotatation)
-  $(blade).velocity({ translateX: 0, translateY: 0 , opacity: 1, rotateZ: [0,180]});
-
+  var life = Math.floor(Math.random() * airblades.length);
+  console.log(life);
+  var blade = airblades[life];
+  var value = airbladeValues[life];
+  var copy = blade.clone()
+  body.append(copy);
+  $(copy).velocity({ translateX: 0, translateY: -90 , opacity: 1).velocity({opacity: 0},{
+    complete: function(element){
+      $(element).remove();
+    }
+  });
+  //$(blade).velocity({ translateX: 0, translateY: -90 , opacity: 1}).velocity({opacity: 0,});
 }
 function rotateBlades(speed){
   if ( speed < 40){
