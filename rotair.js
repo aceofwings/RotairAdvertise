@@ -93,7 +93,7 @@ function positionAirBlades(){
     for( var i = 0 ; i < triangleElements.length; i ++){
       var cp = airblade.clone();
       var position = triangles[i];
-      cp.css({opacity: 1,'position' : 'absolute', left: position.x - 80, bottom: position.y - 40});
+      cp.css({opacity: 0,'position' : 'absolute', left: position.x - 80, bottom: position.y - 40});
       $(cp).velocity({rotateZ: currentRotation},{queue: false, duration: 0})
       value = {rotatation : currentRotation , left: position.x - 80, bottom: position.y - 40 }
       currentRotation -= 22.5;
@@ -105,18 +105,21 @@ function positionAirBlades(){
     //airblade.velocity({x: 1000, y: 50})
 }
 function beginAirbladeAnimation(speed){
+  
   var life = Math.floor(Math.random() * airblades.length);
   console.log(life);
   var blade = airblades[life];
   var value = airbladeValues[life];
-  var copy = blade.clone()
-  body.append(copy);
-  $(copy).velocity({ translateX: 0, translateY: -90 , opacity: 1).velocity({opacity: 0},{
-    complete: function(element){
-      $(element).remove();
-    }
-  });
-  //$(blade).velocity({ translateX: 0, translateY: -90 , opacity: 1}).velocity({opacity: 0,});
+  if(speed < 100){
+    $(blade).velocity({ translateX: 0, translateY: [-20,0] , opacity: 1, easing:"linear"},{duration : 50}).velocity({opacity: 0});
+  }else if(speed <150){
+    $(blade).velocity({ translateX: 0, translateY: [-90,0] , opacity: 1, easing:"linear"},{duration : 100}).velocity({opacity: 0});
+  }else if(speed <300 ){
+    $(blade).velocity({ translateX: 0, translateY: [-90,0] , opacity: 1, easing:"linear"},{duration : 200}).velocity({opacity: 0});
+  }else{
+    $(blade).velocity({ translateX: 0, translateY: [-90,0] , opacity: 1, easing:"linear"},{duration : 300}).velocity({opacity: 0});
+
+  }
 }
 function rotateBlades(speed){
   if ( speed < 40){
@@ -144,6 +147,7 @@ function rotateBlades(speed){
           beginAirbladeAnimation(speed);
         }else{
           rotateBlades(speed - 100);
+          beginAirbladeAnimation(speed);
 
         }
       }
