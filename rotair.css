@@ -10,6 +10,9 @@ body{
   border-left: 40px solid #FFFFFF;
 }
 
+.hidden{
+  display: "none";
+}
 .arrow-blue {
   width: 0;
   height: 0;

@@ -1,6 +1,13 @@
 $(document).ready(function(){
 
 var body = $('body');
+var airBladeLocator = $('.air');
+var airblades =[];
+
+$("#air-blade")
+    .delay(500)
+      .velocity({ translateX: 400, translateY: -200 })
+      .velocity({ height: 100, width: 100 })
 
 var triangles = [
   {x: 40 ,y: 50  ,rotation : 20},
@@ -59,7 +66,7 @@ function assembleBlades(){
    var startx = middleofScreen;
    var starty = 200
    var ir = 360 / triangleElements.length;
-   currentRotation = 0
+   var currentRotation = 0
    var triangleheight = 40;
    for(var i = 0 ; i < triangleElements.length; i ++){
      triangle = triangleElements[i];
@@ -73,14 +80,30 @@ function assembleBlades(){
      triangle.velocity({left: startx, bottom: starty});
      triangle.velocity({rotateZ: -currentRotation},{complete : function(element){
        if (triangleElements[triangleElements.length -1][0] == $(element)[0]){
-
+         positionAirBlades();
+         rotateBlades(600);
        }
      }});
      currentRotation += ir;
  }
 }
+function positionAirBlades(){
+    var currentRotation = 180;
+    airblade = $(airBladeLocator);
+    for( var i = 0 ; i < triangleElements.length; i ++){
+      var cp = airblade.clone();
+      var position = triangles[i];
+      cp.css({'position' : 'absolute', left: position.x - 80, bottom: position.y - 40, "transform":"rotate(" + currentRotation + "deg)"});
+      currentRotation -= 22.5;
+      body.append(cp);
+    }
 
-function rotateBlades(){
+    //airblade.velocity({x: 1000, y: 50})
+}
+function rotateBlades(speed){
+  if ( speed < 40){
+    speed = 40;
+  }
   var first = triangles[0];
   for(var i = 0 ; i < triangleElements.length  ; i ++){
     triangles[i] = triangles[(i + 1 ) % 16];
@@ -89,22 +112,39 @@ function rotateBlades(){
   for(var i = 0 ; i < triangleElements.length ; i ++){
     triangleNextAttributes = triangles[i];
     triangle = triangleElements[i];
-    triangle.velocity({left: triangleNextAttributes.x, bottom: triangleNextAttributes.y,rotateZ: "-=" + 22.5}, {duration: 20});
+    triangle.velocity({left: triangleNextAttributes.x, bottom: triangleNextAttributes.y,rotateZ: "-=" + 22.5}, {duration: speed
+    , easing: "linear",complete: function(element){
+      if (triangleElements[triangleElements.length -1][0] == $(element)[0]){
+        if(speed < 50){
+          rotateBlades(speed - 1);
+        }else if(speed < 150){
+          rotateBlades(speed - 4);
+        }else if (speed < 300) {
+          rotateBlades(speed - 40);
+        }else{
+          rotateBlades(speed - 100);
+
+        }
+      }
+    }});
   }
 }
 function unifyBlades(){
   div = $(document.createElement('div'));
   div.addClass( "unified-blades");
-  for(var i = 0 ; i < triangleElements.length; i ++){
+  for(var i = 0 ; i < triangleElements.length; i++){
     div.append(triangleElements[i]);
   }
   body.append(div)
 }
+
+
 function main(){
   addTrianglesTooDom();
   startAnimation();
   assembleBlades();
   unifyBlades();
+
 }
 
 main();
