@@ -3,11 +3,11 @@ $(document).ready(function(){
 var body = $('body');
 var airBladeLocator = $('.air');
 var airblades =[];
-
-$("#air-blade")
-    .delay(500)
-      .velocity({ translateX: 400, translateY: -200 })
-      .velocity({ height: 100, width: 100 })
+var airbladeValues = [];
+//
+// $("#air-blade")
+//     .delay(500).velocity({ translateX: 100, translateY: 10 })
+//
 
 var triangles = [
   {x: 40 ,y: 50  ,rotation : 20},
@@ -93,12 +93,24 @@ function positionAirBlades(){
     for( var i = 0 ; i < triangleElements.length; i ++){
       var cp = airblade.clone();
       var position = triangles[i];
-      cp.css({'position' : 'absolute', left: position.x - 80, bottom: position.y - 40, "transform":"rotate(" + currentRotation + "deg)"});
+
+      cp.css({opacity: 1,'position' : 'absolute', left: position.x - 80, bottom: position.y - 40, "transform":"rotate(" + currentRotation + "deg)"});
+      value = {rotatation : currentRotation , left: position.x - 80, bottom: position.y - 40 }
       currentRotation -= 22.5;
       body.append(cp);
+      airbladeValues.push(value);
+      airblades.push(cp);
     }
 
     //airblade.velocity({x: 1000, y: 50})
+}
+function beginAirbladeAnimation(speed){
+  var i = Math.random() * airblades.length;
+  var blade = airblades[0];
+  var value = airbladeValues[0];
+  console.log(airbladeValues[1].rotatation)
+  $(blade).velocity({ translateX: 0, translateY: 0 , opacity: 1, rotateZ: [0,180]});
+
 }
 function rotateBlades(speed){
   if ( speed < 40){
@@ -117,10 +129,13 @@ function rotateBlades(speed){
       if (triangleElements[triangleElements.length -1][0] == $(element)[0]){
         if(speed < 50){
           rotateBlades(speed - 1);
+          beginAirbladeAnimation(speed);
         }else if(speed < 150){
           rotateBlades(speed - 4);
+          beginAirbladeAnimation(speed);
         }else if (speed < 300) {
           rotateBlades(speed - 40);
+          beginAirbladeAnimation(speed);
         }else{
           rotateBlades(speed - 100);
 
