@@ -14,9 +14,8 @@ body{
   display: "none";
 }
 .text{
-  color: white;
+  color: #FFF;
   font: 700 38px Scada,san-serif;
-  text-shadow: 2px 2px  #1BA8CF;
   text-align: center;
   vertical-align: middle;
   position: relative;

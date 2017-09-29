@@ -199,19 +199,26 @@ function checkLiftOff() {
       liftingOff()
     }
 }
-function text(){
+function textShow(){
 rotairchars.each(function(i){
   $(this).css({opacity: 0})
   $(this).velocity({opacity : 1}, {delay: i * 40});
 });
 }
+function textHide(){
+  rotairchars.each(function(i){
+    $(this).velocity({opacity : 0}, {delay: i * 40});
+  });
+}
+
 function main(){
   addTrianglesTooDom();
   startAnimation();
   assembleBlades();
   unifyBlades();
   checkLiftOff();
-  setTimeout(text, 2200);
+  setTimeout(textShow, 2200);
+  setTimeout(textHide, 6000);
 }
 
 main();
