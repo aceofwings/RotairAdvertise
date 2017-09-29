@@ -2,8 +2,12 @@ $(document).ready(function(){
 
 var body = $('body');
 var airBladeLocator = $('.air');
+rotairchars = $('.text').blast({ delimiter: "character" })
+rotairchars.css({opacity:0});
 var airblades =[];
 var airbladeValues = [];
+var liftOff = false;
+var offpage = false;
 //
 // $("#air-blade")
 //     .delay(500).velocity({ translateX: 100, translateY: 10 })
@@ -86,6 +90,8 @@ function assembleBlades(){
      }});
      currentRotation += ir;
  }
+
+
 }
 function positionAirBlades(){
     var currentRotation = 180;
@@ -106,11 +112,10 @@ function positionAirBlades(){
 }
 function beginAirbladeAnimation(speed){
   for (var cow = 0 ; cow < airblades.length; cow++){
-    console.log("hello");
     var blade = airblades[cow];
     var value = airbladeValues[cow];
     if(speed < 100){
-      $(blade).velocity({ translateX: 0, translateY: [-40,0] , opacity: 1, easing:"linear"},{queue: false,duration : 100, delay: cow * 50});
+      $(blade).velocity({ translateX: 0, translateY: [-90,0] , opacity: 1, easing:"linear"},{queue: false,duration : 200, delay: cow * 50});
     }else if(speed <150){
       $(blade).velocity({ translateX: 0, translateY: [-90,0] , opacity: 1, easing:"linear"},{queue: false,duration : 300,delay: cow * 50});
     }else if(speed <300 ){
@@ -122,7 +127,11 @@ function beginAirbladeAnimation(speed){
   }
 }
 function rotateBlades(speed){
+  if(offpage){
+    return;
+  }
   if ( speed < 40){
+    liftOff = true;
     speed = 40;
   }
   var first = triangles[0];
@@ -137,8 +146,12 @@ function rotateBlades(speed){
     , easing: "linear",complete: function(element){
       if (triangleElements[triangleElements.length -1][0] == $(element)[0]){
         if(speed < 50){
-          rotateBlades(speed - 1);
-          beginAirbladeAnimation(speed);
+          rotateBlades(speed - 1)
+          if (!liftOff){
+            beginAirbladeAnimation(speed);
+          }else{
+            removeAirblades()
+          }
         }else if(speed < 150){
           rotateBlades(speed - 4);
           beginAirbladeAnimation(speed);
@@ -149,6 +162,7 @@ function rotateBlades(speed){
           rotateBlades(speed - 100);
           beginAirbladeAnimation(speed);
         }
+
       }
     }});
   }
@@ -161,14 +175,43 @@ function unifyBlades(){
   }
   body.append(div)
 }
-
-
+function liftingOff(){
+  for(var i = 0 ; i < triangleElements.length ; i ++){
+   triangles[i].y += 4;
+  }
+  if(triangles[15].y > 1000){
+    offpage = true;
+    return
+  }
+  window.setTimeout(liftingOff, 10);
+}
+function removeAirblades(){
+  for(var i = 0 ; i < triangleElements.length ; i ++){
+    blade = airblades[i];
+    $(blade).velocity({opacity : 0},{queue:false, duration: 200})
+  }
+}
+function checkLiftOff() {
+    if(liftOff == false) {
+       window.setTimeout(checkLiftOff, 10); /* this checks the flag every 100 milliseconds*/
+    } else {
+      removeAirblades();
+      liftingOff()
+    }
+}
+function text(){
+rotairchars.each(function(i){
+  $(this).css({opacity: 0})
+  $(this).velocity({opacity : 1}, {delay: i * 40});
+});
+}
 function main(){
   addTrianglesTooDom();
   startAnimation();
   assembleBlades();
   unifyBlades();
-
+  checkLiftOff();
+  setTimeout(text, 2200);
 }
 
 main();
